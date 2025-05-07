@@ -1,0 +1,29 @@
+#include <iostream>
+#include <omp.h>
+#include <vector>
+#include <limits>
+using namespace std;
+int main() {
+    vector<int> data = {3, 1, 7, 0, 9, 5, 8, 2, 6, 4};
+    int n = data.size();
+
+    int minVal = numeric_limits<int>::max();
+    int maxVal = numeric_limits<int>::min();
+    int sum = 0;
+
+    #pragma omp parallel for reduction(min:minVal) reduction(max:maxVal) reduction(+:sum)
+    for (int i = 0; i < n; i++) {
+        minVal = std::min(minVal, data[i]);
+        maxVal = std::max(maxVal, data[i]);
+        sum += data[i];
+    }
+
+    double average = static_cast<double>(sum) / n;
+
+    cout << "Min: " << minVal << "\n";
+    cout << "Max: " << maxVal << "\n";
+    cout << "Sum: " << sum << "\n";
+    cout << "Average: " << average << "\n";
+
+    return 0;
+}
